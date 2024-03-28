@@ -32,7 +32,7 @@ def search_user(filename: str, data: str) -> str:
     return "\n".join(result)
 
 
-def transfer_data(source: str, dest: str, num_row: int):
+def transfer_data(source: str, dest: str, num_row: int, mode: int):
     """
     Функция для переноса указанной строки из одного файла
     в другой
@@ -40,7 +40,22 @@ def transfer_data(source: str, dest: str, num_row: int):
     dest: str - имя файла куда переносим
     num_row: int - номер переносимой строки
     """
-    pass
+    f = open(source, 'r')
+    i = 1
+    text = ""
+    if os.path.isfile(dest):
+        w = open(dest, 'a')
+    else:
+        w = open(dest, 'w')
+    for line in f:
+        if i == num_row:
+            w.write(line)
+        elif mode == 2:
+            text += line
+        i += 1
+    if mode == 2:
+        w2 = open(source, 'w')
+        w2.write(text)
 
 
 INFO_STRING = """
@@ -49,16 +64,18 @@ INFO_STRING = """
 2 - добавление нового пользователя
 3 - поиск
 4 - перенос записи в другой файл
+5 - выход из программы
 """
 
-file = "Text.txt"
+file = "text.txt"
+loop = True
 
 if file not in os.listdir():
     print("указанное имя файла отсутсвует")
     sys.exit()
 
 
-while True:
+while loop:
     mode = int(input(INFO_STRING))
     if mode == 1:
         print(read_all(file))
@@ -71,4 +88,10 @@ while True:
         print(search_user(file, data))
     elif mode == 4:
         # Тут нужно вызвать функцию с аргументами
-        pass
+        source = input("Введите путь до исходного файла: ")
+        dist = input("Введите путь файла для переноса: ")
+        row_num = int(input("Введите номер строки: "))
+        mode = int(input("Введите модель поведения (1 - копирование, 2 - перенос): "))
+        transfer_data(source, dist, row_num, mode)
+    elif mode == 5:
+        loop = False
